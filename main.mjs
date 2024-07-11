@@ -13,7 +13,9 @@ app.get("/", async (request, response) => {
   const posts = await prisma.post.findMany();
   const html = template.replace(
     "<!-- posts -->",
-    posts.map((post) => `<li>${escapeHTML(post.message)}</li>`).join(""),
+    posts.map((post) => `
+    <li>${escapeHTML(post.message)}</li>
+    `).join("")
   );
   response.send(html);
 });
@@ -22,6 +24,19 @@ app.post("/send", async (request, response) => {
   await prisma.post.create({
     data: { message: request.body.message },
   });
+  template.replace()
+  response.redirect("/");
+});
+
+app.post("/delete", async (request, response) => {
+  const object = await prisma.post.findFirst();
+  if (object) {
+    await prisma.post.delete({
+      where: {
+        id: object.id,
+      },
+    });
+  }
   response.redirect("/");
 });
 
